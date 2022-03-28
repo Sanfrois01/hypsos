@@ -25,6 +25,12 @@ class Suite
     #[ORM\Column(type: 'integer')]
     private $prix;
 
+    #[ORM\ManyToOne(targetEntity: Hotel::class, inversedBy: 'suite')]
+    private $hotel;
+
+    #[ORM\ManyToOne(targetEntity: Reservation::class, inversedBy: 'suites')]
+    private $reservation;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +80,30 @@ class Suite
     public function setPrix(int $prix): self
     {
         $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getHotel(): ?Hotel
+    {
+        return $this->hotel;
+    }
+
+    public function setHotel(?Hotel $hotel): self
+    {
+        $this->hotel = $hotel;
+
+        return $this;
+    }
+
+    public function getReservation(): ?Reservation
+    {
+        return $this->reservation;
+    }
+
+    public function setReservation(?Reservation $reservation): self
+    {
+        $this->reservation = $reservation;
 
         return $this;
     }

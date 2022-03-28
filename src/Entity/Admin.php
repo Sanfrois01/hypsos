@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdminRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,6 +26,14 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string')]
     private $password;
+
+    #[ORM\ManyToMany(targetEntity: Hotel::class, inversedBy: 'admins')]
+    private $adminid;
+
+    public function __construct()
+    {
+        $this->adminid = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,5 +103,29 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Hotel>
+     */
+    public function getAdminid(): Collection
+    {
+        return $this->adminid;
+    }
+
+    public function addAdminid(Hotel $adminid): self
+    {
+        if (!$this->adminid->contains($adminid)) {
+            $this->adminid[] = $adminid;
+        }
+
+        return $this;
+    }
+
+    public function removeAdminid(Hotel $adminid): self
+    {
+        $this->adminid->removeElement($adminid);
+
+        return $this;
     }
 }

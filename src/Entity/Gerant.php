@@ -24,6 +24,12 @@ class Gerant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $email;
+
+    #[ORM\OneToOne(mappedBy: 'gerant', targetEntity: Hotel::class, cascade: ['persist', 'remove'])]
+    private $hotel;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,5 +98,43 @@ class Gerant implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getHotel(): ?Hotel
+    {
+        return $this->hotel;
+    }
+
+    public function setHotel(?Hotel $hotel): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($hotel === null && $this->hotel !== null) {
+            $this->hotel->setGerant(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($hotel !== null && $hotel->getGerant() !== $this) {
+            $hotel->setGerant($this);
+        }
+
+        $this->hotel = $hotel;
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->username;
     }
 }
